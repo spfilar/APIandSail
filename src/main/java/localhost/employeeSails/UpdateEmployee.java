@@ -1,4 +1,4 @@
-package localhost.javaSailsRestDemo;
+package localhost.employeeSails;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -8,15 +8,15 @@ import java.net.URLEncoder;
 import java.util.Scanner;
 
 /**
- * Sample class that stores employee info in a json arraylist that is accessed
+ * Sample class that updates employee info in a json arraylist that is accessed
  * through sails
  * 
  * @author Stuart Filar
- * @since 2016-09-06
+ * @since 2016-09-07
  * 
  */
 
-public class AddEmployee {
+public class UpdateEmployee {
 
 	// URL of the API we want to connect to
 	protected static String endpoint = "http://localhost:1337/employee/";
@@ -30,6 +30,7 @@ public class AddEmployee {
 	public static void main(String[] args) {
 
 		// declaring variables
+		String employeeID = null;
 		String firstName = null;
 		String lastName = null;
 		String email = null;
@@ -41,6 +42,10 @@ public class AddEmployee {
 		String password = null;
 
 		try {
+
+			// employee ID number
+			System.out.println("What is the employee's ID number?");
+			employeeID = sc.nextLine();
 
 			// first name of the employee
 			System.out.println("What is the employee's first name?");
@@ -80,19 +85,19 @@ public class AddEmployee {
 			// creates the url parameters as a string encoding them with the
 			// define charset, based on conditions set by user input
 			queryString = String.format(
-					"firstName=%s&lastName=%s&email=%s&homePhone=%s&cellPhone=%s&password=%s&active=%s",
-					URLEncoder.encode(firstName, charset), URLEncoder.encode(lastName, charset),
-					URLEncoder.encode(email, charset), URLEncoder.encode(homePhone, charset),
-					URLEncoder.encode(cellPhone, charset), URLEncoder.encode(password, charset),
-					URLEncoder.encode(active, charset));
+					"%s?firstName=%s&lastName=%s&email=%s&homePhone=%s&cellPhone=%s&password=%s&active=%s",
+					URLEncoder.encode(employeeID, charset), URLEncoder.encode(firstName, charset),
+					URLEncoder.encode(lastName, charset), URLEncoder.encode(email, charset),
+					URLEncoder.encode(homePhone, charset), URLEncoder.encode(cellPhone, charset),
+					URLEncoder.encode(password, charset), URLEncoder.encode(active, charset));
 
 			// creates a new URL out of the endpoint, returnType and queryString
-			URL employeeList = new URL(endpoint + "?" + queryString);
+			URL employeeList = new URL(endpoint + queryString);
 			HttpURLConnection connection = (HttpURLConnection) employeeList.openConnection();
-			connection.setRequestMethod("POST");
+			connection.setRequestMethod("PUT");
 
-			// if we did not get a 201(success) throw an exception
-			if (connection.getResponseCode() != 201) {
+			// if we did not get a 200(success) throw an exception
+			if (connection.getResponseCode() != 200) {
 				throw new RuntimeException("Failed : HTTP error code : " + connection.getResponseMessage());
 
 			} else {
@@ -109,4 +114,5 @@ public class AddEmployee {
 			e.printStackTrace();
 		}
 	}
+
 }
